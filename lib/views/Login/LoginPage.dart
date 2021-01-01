@@ -172,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 MaterialButton(
                   padding: EdgeInsets.all(25.0),
-                  color: Colors.blue,
+                  color: Colors.deepOrange,
                   onPressed: () {
                     if (_key.currentState.validate()) {
                       _key.currentState.save();
@@ -181,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                       _autoValidate = true;
                     }
                   },
-                  child: Text("Login"),
+                  child: Text("Login",style: TextStyle(color: Colors.white),),
                 )
               ],
             ),

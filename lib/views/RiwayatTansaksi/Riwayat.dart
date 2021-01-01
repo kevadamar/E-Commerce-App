@@ -31,26 +31,34 @@ class _RiwayatState extends State<Riwayat> {
     setState(() {
       loading = true;
     });
-    final responseData = await http.get(BaseURL.apiBarang);
+    final responseData = await http.get(BaseURL.apiListRiwayat);
     // print(BaseURL.apiBarang);
     // print(responseData.statusCode);
     final data = jsonDecode(responseData.body);
+      
     Map<String, dynamic> resDataString = data;
     if (resDataString['code'] == 200) {
       // print("cek data");
-      // print(resDataString['data']);
       if (resDataString['data'] == null) {
         nullData = true;
       } else {
         resDataString['data'].forEach((api) {
+          print("data api : ");
+          print(api['nama_barang']);
           final ab = new RiwayatTransaksiModel(
-            api['id'],
-            api['id_kategori'],
-            api['id_satuan'],
+            api['id_faktur'],
+            api['id_barang'],
+            api['harga_detail_per_barang'],
             api['nama_barang'],
-            api['harga'],
-            api['image'],
-            api['tglexpired'],
+            api['grandtotal'],
+            api['gambar'],
+            api['tgl_penjualan'],
+            api['qty'],
+            api['harga_satuan'],
+            api['nama_satuan'],
+            api['nilaibayar'],
+            api['nilaikembali'],
+            api['satuan'],
           );
           list.add(ab);
         });
@@ -68,6 +76,12 @@ class _RiwayatState extends State<Riwayat> {
         "2",
         "cimory.jpg",
         "2020-03-03",
+        "error",
+        "error",
+        "error",
+        "error",
+        "error",
+        "error",
       );
       list.add(ab);
       setState(() {
@@ -97,16 +111,6 @@ class _RiwayatState extends State<Riwayat> {
             )
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => new TambahProduk(_lihatData)));
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Color.fromRGBO(255, 82, 48, 1),
       ),
       body: RefreshIndicator(
           onRefresh: _lihatData,
@@ -139,7 +143,7 @@ class _RiwayatState extends State<Riwayat> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Image.network(BaseURL.paths + '/' + resData.image,
+                              Image.network(BaseURL.paths + '/' + resData.gambar,
                                   width: 100.0,
                                   height: 120.0,
                                   fit: BoxFit.cover),
@@ -149,15 +153,15 @@ class _RiwayatState extends State<Riwayat> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     // nama barang
-                                    Text(resData.namaBarang,
+                                    Text(resData.namabarang,
                                         style: TextStyle(
                                             fontSize: 20.0,
                                             fontWeight: FontWeight.bold)),
                                     // tanggal terjual
                                     Text(
-                                        "Rp." +
+                                        '1' + resData.satuan + '/Rp.' +
                                             money.format(
-                                              int.parse(resData.harga),
+                                              int.parse(resData.hargadetailperbarang),
                                             ),
                                         
                                         style: TextStyle(

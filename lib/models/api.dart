@@ -31,5 +31,8 @@ class BaseURL {
   static String apiCheckout = '$urlBase/cart/prosesCheckout.php';
 
   static String apiLogin = '$urlBase/login.php';
+
+  static String apiListRiwayat = '$urlBase/riwayatTransaksi/index.php';
+  static String apiDetailRiwayat = '$apiListRiwayat?';
   
 }

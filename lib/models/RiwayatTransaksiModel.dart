@@ -1,24 +1,34 @@
 class RiwayatTransaksiModel {
-  String id;
-  String idKategori;
-  String userid;
-  String idSatuan;
-  String namaBarang;
-  String harga;
-  String image;
-  String tglexpired;
+  String idfaktur;
+  String idbarang;
+  String hargasatuan;
+  String hargadetailperbarang;
+  String namabarang;
+  String grandtotal;
+  String gambar;
+  String tglpenjualan;
+  String nilaibayar;
+  String nilaikembali;
+  String qty;
+  String namasatuan;
+  String satuan;
 
-  RiwayatTransaksiModel(this.id, this.idKategori,this.idSatuan, this.namaBarang, this.harga, this.image,
-      this.tglexpired);
+  RiwayatTransaksiModel(this.idfaktur, this.idbarang,this.hargadetailperbarang, this.namabarang, this.grandtotal, this.gambar,
+      this.tglpenjualan,this.qty,this.hargasatuan,this.namasatuan,this.nilaibayar,this.nilaikembali,this.satuan);
 
   RiwayatTransaksiModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    idKategori = json['id_kategori'];
-    idSatuan = json['id_satuan'];
-    namaBarang = json['nama_barang'];
-    harga = json['harga'];
-    image = json['image'];
-    tglexpired = json['tglexpired'];
-    userid = json['userid'];
+    idfaktur = json['idfaktur'];
+    idbarang = json['id_barang'];
+    hargadetailperbarang = json['harga_detail_per_barang'];
+    namabarang = json['nama_barang'];
+    grandtotal = json['grandtotal'];
+    gambar = json['gambar'];
+    tglpenjualan = json['tgl_penjualan'];
+    hargasatuan = json['harga_satuan'];
+    namasatuan = json['nama_satuan'];
+    satuan = json['satuan'];
+    qty = json['qty'];
+    nilaibayar = json['nilaibayar'];
+    nilaikembali = json['nilaikembali'];
   }
 }
