@@ -172,13 +172,7 @@ class _RiwayatState extends State<Riwayat> {
                               ),
                               IconButton(
                                 icon: Icon(Icons.info_outline),
-                                onPressed: () {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (contex) =>
-                                  //             new EditProduk(resData, _lihatData)));
-                                },
+                                onPressed: () {},
                               )
                             ],
                           ),
