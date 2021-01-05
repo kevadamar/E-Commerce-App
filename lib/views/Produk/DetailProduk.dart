@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:globalshop/models/ProdukModel.dart';
 import 'package:globalshop/models/api.dart';
 import 'package:globalshop/utils/constans.dart';
+import 'package:globalshop/views/RiwayatTansaksi/DetailRiwayat.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:globalshop/models/KeranjangModel.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailProduk extends StatefulWidget {
   final ProdukModel listProduk;
@@ -20,6 +22,15 @@ class _DetailProdukState extends State<DetailProduk> {
   int _currentImage = 0;
   final money = NumberFormat("#,##0", "en_US");
   var loading = false;
+  String idUsers;
+
+  _getUserid() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      idUsers = preferences.getInt("userid").toString();
+    });
+    _countCart();
+  }
 
   List<Widget> buildPageIndicator() {
     List<Widget> list = [];
@@ -48,7 +59,7 @@ class _DetailProdukState extends State<DetailProduk> {
   tambahKeranjang(String idProduk, String harga) async {
     try {
       final response = await http.post(BaseURL.apiAddCart,
-          body: {"userid": "1", "id_barang": idProduk, "harga": harga});
+          body: {"userid": idUsers, "id_barang": idProduk, "harga": harga});
 
       final data = jsonDecode(response.body);
       int code = data['code'];
@@ -75,7 +86,7 @@ class _DetailProdukState extends State<DetailProduk> {
     });
     ex.clear();
 
-    final response = await http.get(BaseURL.apiCountCart + "1");
+    final response = await http.get(BaseURL.apiCountCart + idUsers);
     final data = jsonDecode(response.body);
 
     final dataApi = data['data'];
@@ -99,7 +110,7 @@ class _DetailProdukState extends State<DetailProduk> {
   @override
   void initState() {
     super.initState();
-    _countCart();
+    _getUserid();
   }
 
   @override
@@ -139,31 +150,30 @@ class _DetailProdukState extends State<DetailProduk> {
                     Icons.shopping_cart,
                     color: Colors.black,
                   ),
-                  onPressed: () {}),
+                  onPressed: () {
+                    // count in cart
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => new Cart()));
+                  }),
               // counting in cart
-              (jumlahnya == "0" ? 
-              Container() : 
-              Positioned(
-                right: 0.0,
-                child: Stack(
-                  children: <Widget>[
-                    Icon(
-                      Icons.brightness_1,size: 20.0,color: Colors.white
-                    ),
-                    Positioned(
-                      top: 3.0,
-                      right: 6.0,
-                      child: Text(
-                        jumlahnya,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 11.0
-                        ),
-                      )
-                    )
-                  ],
-                )
-              ))
+              (jumlahnya == "0"
+                  ? Container()
+                  : Positioned(
+                      right: 0.0,
+                      child: Stack(
+                        children: <Widget>[
+                          Icon(Icons.brightness_1,
+                              size: 20.0, color: Colors.white),
+                          Positioned(
+                              top: 3.0,
+                              right: 6.0,
+                              child: Text(
+                                jumlahnya,
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 11.0),
+                              ))
+                        ],
+                      )))
               //end counting cart
             ],
           )

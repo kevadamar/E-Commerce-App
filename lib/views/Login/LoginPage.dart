@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
 
   check() {
     // final form = _key.currentState;
-    
+
     login();
     // if (form.validate()) {
     // } else {
@@ -48,12 +48,13 @@ class _LoginPageState extends State<LoginPage> {
       String pesan = data['message'];
 
       // from api
-      String usernameApi, namaApi;
+      String usernameApi, namaApi,emailApi;
       int useridApi, userLevel;
 
       data['data'].forEach((api) {
         usernameApi = api['username'];
         namaApi = api['nama'];
+        emailApi = api['email'];
         useridApi = api['userid'];
         userLevel = api['level'];
       });
@@ -61,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
       if (code == 200) {
         setState(() {
           _loginStatus = LoginStatus.signIn;
-          savePref(code, usernameApi, namaApi, useridApi, userLevel);
+          savePref(code, usernameApi, namaApi, emailApi, useridApi, userLevel);
         });
         print(pesan);
       } else {
@@ -73,13 +74,14 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  savePref(int code, String usernameApi, String namaApi, int useridApi,
-      int userLevel) async {
+  savePref(int code, String usernameApi, String namaApi, String emailApi,
+      int useridApi, int userLevel) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       preferences.setInt("code", code);
       preferences.setString("username", usernameApi);
       preferences.setString("nama", namaApi);
+      preferences.setString("email", emailApi);
       preferences.setInt("userid", useridApi);
       preferences.setInt("level", userLevel);
       preferences.commit();
@@ -181,7 +183,10 @@ class _LoginPageState extends State<LoginPage> {
                       _autoValidate = true;
                     }
                   },
-                  child: Text("Login",style: TextStyle(color: Colors.white),),
+                  child: Text(
+                    "Login",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 )
               ],
             ),

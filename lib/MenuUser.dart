@@ -11,6 +11,7 @@ import 'package:globalshop/views/Produk/DetailProduk.dart';
 import 'package:globalshop/views/RiwayatTansaksi/Riwayat.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MenuUser extends StatefulWidget {
   final VoidCallback signOut;
@@ -32,8 +33,31 @@ class _MenuUserState extends State<MenuUser> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final money = NumberFormat("#,##0", "en_US");
+  String idUsers, nama, email;
   var loading = false;
-  final listProduk = new List<ProdukModel>();
+  final listProduk = new List<ProdukModel>(),
+      listProdukLaris = new List<ProdukModel>();
+
+  _getUserid() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      idUsers = preferences.getInt("userid").toString();
+      nama = preferences.getString("nama").toString();
+      email = preferences.getString("email").toString();
+    });
+    _countCart();
+    _lihatDataLaris();
+    _lihatData();
+  }
+
+  _convertDuplicate(List listData) {
+
+    // convert each item back to the original form using JSON decoding
+    final result = listData.toList();
+    print("result:");
+    print(result);
+    return result;
+  }
 
   Future<void> _lihatData() async {
     listProduk.clear();
@@ -49,7 +73,6 @@ class _MenuUserState extends State<MenuUser> {
 
       Map<String, dynamic> resDataString = data;
 
-      print(resDataString["data"]);
 
       resDataString['data'].forEach((api) {
         final ab = new ProdukModel(
@@ -68,12 +91,45 @@ class _MenuUserState extends State<MenuUser> {
     } else {}
   }
 
+  Future<void> _lihatDataLaris() async {
+    listProdukLaris.clear();
+
+    setState(() {
+      loading = true;
+    });
+
+    final response = await http.get(BaseURL.apiBarang + "?q=true");
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      Map<String, dynamic> resDataString = data;
+      
+      resDataString['data'] = _convertDuplicate(resDataString['data']);
+
+      resDataString['data'].forEach((api) {
+        final ab = new ProdukModel(
+            api['id'],
+            api['id_kategori'],
+            api['id_satuan'],
+            api['nama_barang'],
+            api['harga'],
+            api['image'],
+            api['tglexpired']);
+        listProdukLaris.add(ab);
+      });
+      setState(() {
+        loading = false;
+      });
+    } else {}
+  }
+
   //add to cart method
 
   tambahKeranjang(String idProduk, String harga) async {
     try {
       final response = await http.post(BaseURL.apiAddCart,
-          body: {"userid": "1", "id_barang": idProduk, "harga": harga});
+          body: {"userid": idUsers, "id_barang": idProduk, "harga": harga});
 
       final data = jsonDecode(response.body);
       int code = data['code'];
@@ -101,9 +157,8 @@ class _MenuUserState extends State<MenuUser> {
       });
       ex.clear();
 
-      final response = await http.get(BaseURL.apiCountCart + "1");
+      final response = await http.get(BaseURL.apiCountCart + idUsers);
       final data = jsonDecode(response.body);
-
       final dataApi = data['data'];
       final code = data['code'];
       final pesan = data['pesan'];
@@ -138,8 +193,7 @@ class _MenuUserState extends State<MenuUser> {
   @override
   void initState() {
     super.initState();
-    _lihatData();
-    _countCart();
+    _getUserid();
   }
 
   @override
@@ -169,10 +223,11 @@ class _MenuUserState extends State<MenuUser> {
                     icon: Icon(Icons.shopping_cart, color: Colors.black),
                     onPressed: () => {
                           // count in cart
-                          Navigator.push(context, 
-                            MaterialPageRoute(builder: (context) => new Cart()))
-                        }
-                ),
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => new Cart()))
+                        }),
                 // counting in cart
                 (jumlahnya == "0"
                     ? Container()
@@ -224,7 +279,7 @@ class _MenuUserState extends State<MenuUser> {
                   child: ListView(
                     physics: BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
-                    children: buildItems(),
+                    children: buildItemsLaris(),
                   ),
                 ),
                 Text(
@@ -251,8 +306,9 @@ class _MenuUserState extends State<MenuUser> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               UserAccountsDrawerHeader(
-                accountName: new Text("Keva Damar Galih"),
-                accountEmail: new Text("1118100066@stmikglobal.ac.id"),
+                accountName: Text(nama != null ? nama : "Keva Damar Galih"),
+                accountEmail: Text(
+                    email != null ? email : "1118100066@stmikglobal.ac.id"),
                 decoration: new BoxDecoration(color: Colors.grey),
                 currentAccountPicture: new CircleAvatar(
                   backgroundImage: AssetImage('assets/img/user.png'),
@@ -378,6 +434,14 @@ class _MenuUserState extends State<MenuUser> {
   List<Widget> buildItems() {
     List<Widget> list = [];
     for (var listProduk in listProduk) {
+      list.add(buildItem(listProduk));
+    }
+    return list;
+  }
+
+  List<Widget> buildItemsLaris() {
+    List<Widget> list = [];
+    for (var listProduk in listProdukLaris) {
       list.add(buildItem(listProduk));
     }
     return list;
