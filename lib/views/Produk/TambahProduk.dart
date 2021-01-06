@@ -120,12 +120,6 @@ class _TambahProdukState extends State<TambahProduk> {
       var length = await _imageFile.length();
       var uri = Uri.parse(BaseURL.apiPostBarang);
       var request = http.MultipartRequest("POST", uri);
-
-      print("id satuan");
-      print(idSatuan);
-      print("id barang");
-      print(idKategori);
-
       request.fields['nama_barang'] = namaBarang;
       request.fields['harga'] = harga.replaceAll(",", "");
       request.fields['id_kategori'] = idKategori;
@@ -140,10 +134,8 @@ class _TambahProdukState extends State<TambahProduk> {
       Map<String, dynamic> respStr =
           jsonDecode(await responseServe.stream.bytesToString());
 
-      // print("status code");
-      // print(responseServe.statusCode);
       if (responseServe.statusCode == 201 || responseServe.statusCode == 200) {
-        print("reload");
+
         setState(() {
           Navigator.pop(context);
           widget.reload();

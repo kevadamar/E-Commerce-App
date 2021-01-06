@@ -23,7 +23,7 @@ class _CartState extends State<Cart> {
   final GlobalKey<RefreshIndicatorState> _refresh =
       GlobalKey<RefreshIndicatorState>();
   var loading = false;
-  String idUsers;
+  var idUsers;
 
   getPref() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();

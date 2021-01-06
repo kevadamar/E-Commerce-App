@@ -37,8 +37,8 @@ class _MenuSatuanState extends State<MenuSatuan> {
     Map<String, dynamic> resDataString = data;
     if (resDataString['code'] == 200) {
       if (resDataString['data'] == null) {
-          nullData = true;
-        
+        nullData = true;
+
         list.add(null);
       } else {
         print(resDataString['data']);
@@ -125,10 +125,6 @@ class _MenuSatuanState extends State<MenuSatuan> {
     );
 
     list.map((e) {
-      print("e printer");
-      print(e);
-      print(nullData);
-
       rows.add(
         TableRow(children: <Widget>[
           Padding(
@@ -276,31 +272,30 @@ class _MenuSatuanState extends State<MenuSatuan> {
                 : ListView(
                     children: <Widget>[
                       Container(
-                        width: MediaQuery.of(context).size.width,
-                        color: Colors.white,
-                        child: (
-                          nullData
-                            ? Padding(padding: EdgeInsets.all(10.0),child: Center(
-                              child: Text(
-                                    "Data Kosong",
-                                    style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.center,
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.white,
+                          child: (nullData
+                              ? Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Center(
+                                    child: Text(
+                                      "Data Kosong",
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
-                            ),)
-                            : Table(
-                                border: TableBorder.all(color: Colors.black),
-                                columnWidths: {
-                                  0: FlexColumnWidth(1.5),
-                                  1: FlexColumnWidth(4),
-                                  2: FlexColumnWidth(2.5),
-                                  3: FlexColumnWidth(2.5),
-                                },
-                                children: _listTableRow()
                                 )
-                        )
-                      ),
+                              : Table(
+                                  border: TableBorder.all(color: Colors.black),
+                                  columnWidths: {
+                                    0: FlexColumnWidth(1.5),
+                                    1: FlexColumnWidth(4),
+                                    2: FlexColumnWidth(2.5),
+                                    3: FlexColumnWidth(2.5),
+                                  },
+                                  children: _listTableRow()))),
                     ],
                   )));
   }

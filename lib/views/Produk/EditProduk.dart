@@ -55,7 +55,6 @@ class _EditProdukState extends State<EditProduk> {
   Future<List<KategoriModel>> _fetchKategoriList() async {
     var responseData = await http.get(linkKategori);
     Map<String, dynamic> data = jsonDecode(responseData.body);
-    print("dari data json");
     // print(responseData);
 
     if (responseData.statusCode == 200 && data['code'] == 200) {
@@ -81,11 +80,11 @@ class _EditProdukState extends State<EditProduk> {
       final items = data['data'];
 
       List<SatuanModel> listOfSatuan = items.map<SatuanModel>((json) {
-        // return json;
+
         return SatuanModel.fromJson(json);
       }).toList();
       currentListSatuan = items;
-      // print(currentListKategori);
+
       return listOfSatuan;
     } else {
       throw Exception('Internet Tidak Stabil...');
@@ -123,8 +122,6 @@ class _EditProdukState extends State<EditProduk> {
       var uri = Uri.parse(BaseURL.apiEditBarang);
       var request = http.MultipartRequest("POST", uri);
 
-      print("post proses");
-
       request.fields['id_barang'] = widget.model.id;
       request.fields['nama_barang'] = namaBarang;
       request.fields['harga'] = harga.replaceAll(",", "");
@@ -146,10 +143,7 @@ class _EditProdukState extends State<EditProduk> {
       Map<String, dynamic> respStr =
           jsonDecode(await responseServe.stream.bytesToString());
 
-      // print("status code");
-      // print(responseServe.statusCode);
       if (responseServe.statusCode == 200) {
-        print("reload");
         setState(() {
           Navigator.pop(context);
           widget.reload();
@@ -175,27 +169,33 @@ class _EditProdukState extends State<EditProduk> {
   }
 
   prosesBiasa() async {
-    final response = await http.post(BaseURL.apiEditBarang, body: {
-      "nama_barang": namaBarang,
-      "harga": harga.replaceAll(",", ""),
-      "id_kategori": idKategori == null ? widget.model.idKategori : idKategori,
-      "tglexpired": "$tglexpired",
-      "userid": "1",
-      "id_satuan": idSatuan == null ? widget.model.idSatuan : idSatuan,
-      "id_barang": widget.model.id
-    });
-    final data = jsonDecode(response.body);
-    int value = data['code'];
-    String pesan = data['message'];
-
-    if (value == 200) {
-      setState(() {
-        print(pesan);
-        widget.reload();
-        Navigator.pop(context);
+    try {
+      final response = await http.post(BaseURL.apiEditBarang, body: {
+        "nama_barang": namaBarang,
+        "harga": harga.replaceAll(",", ""),
+        "id_kategori":
+            idKategori == null ? widget.model.idKategori : idKategori,
+        "tglexpired": "$tglexpired",
+        "userid": "1",
+        "id_satuan": idSatuan == null ? widget.model.idSatuan : idSatuan,
+        "id_barang": widget.model.id
       });
-    } else {
-      print(pesan);
+      final data = jsonDecode(response.body);
+      int value = data['code'];
+      String pesan = data['message'];
+
+      if (value == 200) {
+        setState(() {
+          print(pesan);
+          widget.reload();
+          Navigator.pop(context);
+        });
+      } else {
+        print(pesan);
+      }
+    } catch (e) {
+      print("error catch");
+      print(e);
     }
   }
 
@@ -287,7 +287,7 @@ class _EditProdukState extends State<EditProduk> {
                   children: <Widget>[
                     InkWell(
                       onTap: () {
-                          Navigator.pop(context);
+                        Navigator.pop(context);
                       },
                       child: Text(
                         "OK",

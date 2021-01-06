@@ -165,87 +165,99 @@ class _MenuProdukState extends State<MenuProduk> {
         backgroundColor: Color.fromRGBO(255, 82, 48, 1),
       ),
       body: RefreshIndicator(
-        onRefresh: _lihatData,
-        key: _refresh,
-        child: loading
-            ? Center(child: CircularProgressIndicator())
-            : (nullData ? 
-              ListView(
-                  children: <Widget>[
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      color: Colors.white,
-                      child:  Padding(padding: EdgeInsets.all(10.0),child: Center(
-                              child: Text(
-                                    "Data Kosong",
-                                    style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.center,
+          onRefresh: _lihatData,
+          key: _refresh,
+          child: loading
+              ? Center(child: CircularProgressIndicator())
+              : (nullData
+                  ? ListView(children: <Widget>[
+                      Container(
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.white,
+                          child: Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Center(
+                                child: Text(
+                                  "Data Kosong",
+                                  style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
+                                ),
+                              )))
+                    ])
+                  : ListView.builder(
+                      itemCount: list.length,
+                      itemBuilder: (context, i) {
+                        final resData = list[i];
+                        return Container(
+                            padding: EdgeInsets.only(
+                                top: 12.0, left: 12.0, right: 12.0),
+                            child: Card(
+                              elevation: 2.5,
+                              // shadowColor: Colors.deepOrangeAccent,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Image.network(
+                                      BaseURL.paths + '/' + resData.image,
+                                      width: 70.0,
+                                      height: 90.0,
+                                      fit: BoxFit.cover),
+                                  SizedBox(width: 10.0),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          "No." + (i + 1).toString(),
+                                          style: TextStyle(fontSize: 15.0),
+                                        ),
+                                        Text(resData.namaBarang,
+                                            style: TextStyle(
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold)),
+                                        Text(
+                                            "Rp." +
+                                                money.format(
+                                                  int.parse(resData.harga),
+                                                ),
+                                            style: TextStyle(
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold)),
+                                      ],
+                                    ),
                                   ),
-                                )
-                              )
-                            )
-                          ]
-                        )
-                : ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (context, i) {
-                  final resData = list[i];
-                  return Container(
-                    padding: EdgeInsets.all(10.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Image.network(BaseURL.paths + '/' + resData.image,
-                            width: 100.0, height: 120.0, fit: BoxFit.cover),
-                        SizedBox(width: 10.0),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                "No." + (i + 1).toString(),
-                                style: TextStyle(fontSize: 15.0),
-                              ),
-                              Text(resData.namaBarang,
-                                  style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold)),
-                              Text(
-                                  "Rp." +
-                                      money.format(
-                                        int.parse(resData.harga),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: Icon(Icons.edit),
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (contex) =>
+                                                      new EditProduk(resData,
+                                                          _lihatData)));
+                                        },
                                       ),
-                                  style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (contex) =>
-                                        new EditProduk(resData, _lihatData)));
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-                            dialogHapus(resData.id);
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              )
-            )
-      ),
+                                      IconButton(
+                                        icon: Icon(Icons.delete),
+                                        onPressed: () {
+                                          dialogHapus(resData.id);
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ));
+                      },
+                    ))),
     );
   }
 }

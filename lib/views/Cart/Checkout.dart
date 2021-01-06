@@ -10,11 +10,11 @@ class Checkout extends StatefulWidget {
 class _CheckoutState extends State<Checkout> {
   var loading = false,loadingDetail = false;
 
-  String idUsers;
+  var idUsers;
   getPref()async{
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
-      idUsers = preferences.getString("userid");
+      idUsers = preferences.getInt("userid").toString();
     });
   }
 

@@ -50,78 +50,77 @@ class _MenuUserState extends State<MenuUser> {
     _lihatData();
   }
 
-  _convertDuplicate(List listData) {
-
-    // convert each item back to the original form using JSON decoding
-    final result = listData.toList();
-    print("result:");
-    print(result);
-    return result;
-  }
-
   Future<void> _lihatData() async {
-    listProduk.clear();
+    try {
+      listProduk.clear();
 
-    setState(() {
-      loading = true;
-    });
-
-    final response = await http.get(BaseURL.apiBarang);
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-
-      Map<String, dynamic> resDataString = data;
-
-
-      resDataString['data'].forEach((api) {
-        final ab = new ProdukModel(
-            api['id'],
-            api['id_kategori'],
-            api['id_satuan'],
-            api['nama_barang'],
-            api['harga'],
-            api['image'],
-            api['tglexpired']);
-        listProduk.add(ab);
-      });
       setState(() {
-        loading = false;
+        loading = true;
       });
-    } else {}
+
+      final response = await http.get(BaseURL.apiBarang);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        Map<String, dynamic> resDataString = data;
+
+        resDataString['data'].forEach((api) {
+          final ab = new ProdukModel(
+              api['id'],
+              api['id_kategori'],
+              api['id_satuan'],
+              api['nama_barang'],
+              api['harga'],
+              api['image'],
+              api['tglexpired']);
+          listProduk.add(ab);
+        });
+        setState(() {
+          loading = false;
+        });
+      } else {}
+    } catch (e) {
+      print("error catch : ");
+      print(e);
+    }
   }
 
   Future<void> _lihatDataLaris() async {
-    listProdukLaris.clear();
+    try {
+      listProdukLaris.clear();
 
-    setState(() {
-      loading = true;
-    });
-
-    final response = await http.get(BaseURL.apiBarang + "?q=true");
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-
-      Map<String, dynamic> resDataString = data;
-      
-      resDataString['data'] = _convertDuplicate(resDataString['data']);
-
-      resDataString['data'].forEach((api) {
-        final ab = new ProdukModel(
-            api['id'],
-            api['id_kategori'],
-            api['id_satuan'],
-            api['nama_barang'],
-            api['harga'],
-            api['image'],
-            api['tglexpired']);
-        listProdukLaris.add(ab);
-      });
       setState(() {
-        loading = false;
+        loading = true;
       });
-    } else {}
+
+      final response =
+          await http.get(BaseURL.apiBarang + "?q=true&userid=" + idUsers);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        Map<String, dynamic> resDataString = data;
+
+        resDataString['data'].forEach((api) {
+          final ab = new ProdukModel(
+              api['id'],
+              api['id_kategori'],
+              api['id_satuan'],
+              api['nama_barang'],
+              api['harga'],
+              api['image'],
+              api['tglexpired']);
+          listProdukLaris.add(ab);
+        });
+        setState(() {
+          loading = false;
+        });
+      } else {}
+    } catch (e) {
+      print("error catch : ");
+      print(e);
+    }
   }
 
   //add to cart method

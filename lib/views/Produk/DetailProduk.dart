@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:globalshop/models/ProdukModel.dart';
 import 'package:globalshop/models/api.dart';
 import 'package:globalshop/utils/constans.dart';
-import 'package:globalshop/views/RiwayatTansaksi/DetailRiwayat.dart';
+import 'package:globalshop/views/Cart/Cart.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:globalshop/models/KeranjangModel.dart';
@@ -81,28 +81,33 @@ class _DetailProdukState extends State<DetailProduk> {
   final ex = List<KeranjangModel>();
 
   _countCart() async {
-    setState(() {
-      loading = true;
-    });
-    ex.clear();
-
-    final response = await http.get(BaseURL.apiCountCart + idUsers);
-    final data = jsonDecode(response.body);
-
-    final dataApi = data['data'];
-
-    dataApi.forEach((api) {
-      final exp = new KeranjangModel(api['jumlah']);
-      ex.add(exp);
+    try {
       setState(() {
-        jumlahnya = exp.jumlah;
+        loading = true;
       });
-    });
+      ex.clear();
 
-    setState(() {
-      _countCart();
-      loading = false;
-    });
+      final response = await http.get(BaseURL.apiCountCart + idUsers);
+      final data = jsonDecode(response.body);
+
+      final dataApi = data['data'];
+
+      dataApi.forEach((api) {
+        final exp = new KeranjangModel(api['jumlah']);
+        setState(() {
+          ex.add(exp);
+          jumlahnya = exp.jumlah;
+        });
+      });
+
+      setState(() {
+        _countCart();
+        loading = false;
+      });
+    } catch (e) {
+      print("error Catch");
+      print(e);
+    }
   }
 
   // end add to cart

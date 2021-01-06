@@ -1,7 +1,7 @@
 class BaseURL {
-  static String urlBase = "http://192.168.1.4/api-global-flutter/api";
+  static String urlBase = "http://192.168.1.7:8888/api-global-flutter/api";
   // static String urlBase = "http://api-global-flutter.develop/api";
-  static String paths = "http://192.168.1.4/api-global-flutter/uploads";
+  static String paths = "http://192.168.1.7:8888/api-global-flutter/uploads";
   // static String paths = "http://api-global-flutter.develop/upload";
 
   // get method
